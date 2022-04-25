@@ -39,16 +39,43 @@ public class App {
                         "Consultar", JOptionPane.INFORMATION_MESSAGE);
 
                 consultar(dados);
+            } else if (isExclusao(opcao)) {
+                String dados = JOptionPane.showInputDialog(null,
+                        "Digite o CPF do cliente",
+                        "Consulta cliente", JOptionPane.INFORMATION_MESSAGE);
+                excluir(dados);
+            } else {
+                String dados = JOptionPane.showInputDialog(null,
+                        "Digite os dados do cliente separados por vígula, conforme exemplo: Nome, CPF, Telefone, Endereço, Número, Cidade e Estado",
+                        "Atualização", JOptionPane.INFORMATION_MESSAGE);
+                atualizar(dados);
             }
 
             opcao = JOptionPane.showInputDialog(null,
                     "Digite 1 para cadastro, 2 para consulta, 3 para cadastro, 4 para alteração ou 5 para sair",
-                    "Green dinner", JOptionPane.INFORMATION_MESSAGE);
+                    "Cadastro", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
+    private static void atualizar(String dados) {
+        String[] dadosSeparados = dados.split(",");
+        Cliente cliente = new Cliente(dadosSeparados[0],dadosSeparados[1],dadosSeparados[2],dadosSeparados[3],dadosSeparados[4],dadosSeparados[5],dadosSeparados[6]);
+        iClienteDAO.alterar(cliente);
+    }
+
+    private static boolean isExclusao(String opcao) {
+        if ("3".equals(opcao)) {
+            return true;
+        }
+        return false;
+    }
+    private static void excluir(String dados) {
+        iClienteDAO.excluir(Long.parseLong(dados));
+        JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso: ", "Sucesso",JOptionPane.INFORMATION_MESSAGE);
+    }
+
     private static void consultar(String dados) {
-        //Validar se foi passado somente o cpf
+
         Cliente cliente = iClienteDAO.consultar(Long.parseLong(dados));
         if (cliente != null) {
             JOptionPane.showMessageDialog(null, "Cliente encontrado: " + cliente.toString(), "Sucesso",JOptionPane.INFORMATION_MESSAGE);
@@ -67,9 +94,7 @@ public class App {
 
     private static void cadastrar(String dados) {
         String[] dadosSeparados = dados.split(",");
-        //Tentar validar se todos os campos estão preenchidos.
-        //Se não tiver, passr null no construtor onde o valor é nulo
-        //Cliente cliente = new Cliente(dadosSeparados[0],dadosSeparados[1],null,dadosSeparados[3],dadosSeparados[4],dadosSeparados[5],dadosSeparados[6])
+
         Cliente cliente = new Cliente(dadosSeparados[0],dadosSeparados[1],dadosSeparados[2],dadosSeparados[3],dadosSeparados[4],dadosSeparados[5],dadosSeparados[6]);
         Boolean isCadastrado = iClienteDAO.cadastrar(cliente);
         if (isCadastrado) {
